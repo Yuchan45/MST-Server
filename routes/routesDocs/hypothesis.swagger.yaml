@@ -1,0 +1,163 @@
+components:
+  schemas:
+    getRules:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          type:
+            type: string
+          value:
+            type: string
+          name:
+            type: string
+          contracts:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                Hypothesis_contracts:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    contract_id:
+                      type: integer
+                    hypothesis_id:
+                      type: integer
+          fields:
+            type: array
+            items:
+              type: object
+              properties:
+                fileVersion:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                fields:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+      example:
+        - id: 21
+          type: 'relative/equals'
+          value: null
+          name: 'Family Name'
+          contracts:
+            - id: 16
+              name: 'I-360 AOS LPR 601 and 212'
+              Hypothesis_contracts:
+                id: 16
+                contract_id: 16
+                hypothesis_id: 590
+          fields:
+            - fileVersion:
+                id: 26
+                name: 'I-212.pdf'
+              fields:
+                - id: 11241
+                  name: 'form1[0].Page1[0].p1Line2FamilyName[0]'
+                - id: 12905
+                  name: 'form1[0].Page11[0].p1Line2FamilyName[0]'
+        - id: 22
+          type: 'relative/empty'
+          value: null
+          name: 'Phone Number'
+          contracts:
+            - id: 16
+              name: 'I-360 AOS LPR 601'
+              Hypothesis_contracts:
+                id: 16
+                contract_id: 16
+                hypothesis_id: 590
+          fields:
+            - fileVersion:
+                id: 26
+                name: 'I-212.pdf'
+              fields:
+                - id: 11241
+                  name: 'form1[0].Page1[0].p1Line2FamilyName[0]'
+                - id: 12905
+                  name: 'form1[0].Page11[0].p1Line2FamilyName[0]'
+        - id: 23
+          type: 'relative/filled'
+          value: null
+          name: 'First Name'
+          contracts:
+            - id: 16
+              name: 'I-360 AOS 212'
+              Hypothesis_contracts:
+                id: 16
+                contract_id: 16
+                hypothesis_id: 590
+          fields:
+            - fileVersion:
+                id: 26
+                name: 'I-212.pdf'
+              fields:
+                - id: 11241
+                  name: 'form1[0].Page1[0].p1Line2FamilyName[0]'
+                - id: 12905
+                  name: 'form1[0].Page11[0].p1Line2FamilyName[0]'
+    createRule:
+      properties: message
+      description: Post request result.
+
+      example:
+        message: success
+
+
+paths:
+  /rules/find/all:
+    get:
+      summary: Gets rules
+      description: Returns an array of the Rules corresponding to the Hypothesis with rule property true, associated with their contracts and files with their corresponding fields.
+      tags: [Hypothesis]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/getRules'
+        '500':
+          description: Internal Server Error.
+
+  /rules/create:
+    post:
+      summary: Creates a rule
+      description: Receives contracts and fields to create rules.
+      tags: [Hypothesis]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/Rule'
+
+      responses:
+        '201':
+          description: Hypotheses created successfully!
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/createRule'
+
+

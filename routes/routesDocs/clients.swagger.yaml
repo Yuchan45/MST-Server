@@ -1,0 +1,506 @@
+components:
+  schemas:
+    createClientPayload:
+      type: array
+      example:
+        contract_id: 12
+        case_number: "123456789"
+
+    createClientResponse:
+      type: object
+      example:
+        id: 362
+        contract_id: 12
+        case_number: "123456789"
+
+    loginClientPayload:
+      type: array
+      example:
+        case_number: "123456789"
+
+    loginClientResponse:
+      type: array
+      example:
+        id: 12
+        contract_id: 3
+        case_number: "123456789"
+        contractName: "I-360 AOS USC"
+
+    getValidationsAnswer:
+      type: array
+      example:
+        field: 13634
+        value: hola
+        fulfilled: true
+
+    getClientsAllFilesDataResponse:
+      type: array
+      example:
+        - fileId: 27
+          versionId: 93
+          versionName: "v-3"
+          name: "I-360.pdf"
+          url: "https://uscis2bcc76b.blob.core.windows.net/uscis/914f9ad0-2670-11exmECJihJhtePfhP5o%3D"
+          fields:
+            - id: 11135
+              name: "form1[0].#pageSet[0].Page1[0].PDF417BarCode1[0]"
+              input_type: "PDFTextField"
+              value: "I-360|07/15/22|1"
+            - id: 11275
+              name: "form1[0].#subform[0].Pt1Line2_OnlineAcctNumber[0]"
+              input_type: "PDFTextField"
+              value: ""
+            - id: 11285
+              name: "form1[0].#subform[0].Pt1Line1_MiddleName[0]"
+              input_type: "PDFTextField"
+              value: ""
+        - fileId: 29
+          versionId: 98
+          versionName: "v-6"
+          name: "G-28.pdf"
+          url: "https://uscis2bcc76b.blob.core.windows.net/uscis/e3e38400-1cde-11ee-90a0-1d1170634a03.pdf?"
+          fields:
+            - id: 13553
+              name: "form1[0].#subform[0].Line4_DaytimeTelephoneNumber[0]"
+              input_type: "PDFTextField"
+              value: "2064063068"
+            - id: 13554
+              name: "form1[0].#subform[0].Pt1Line2c_MiddleName[0]"
+              input_type: "PDFTextField"
+              value: ""
+        - fileId: 30
+          versionId: 97
+          versionName: "v-3"
+          name: "I-485.pdf"
+          url: "https://uscis2bcc76b.blob.core.windows.net/uscis/b60900a0-2670-11ee-a03b-1d160ccec8d8.pdf?sv=2023%3D"
+          fields: []
+        - fileId: 31
+          versionId: 95
+          versionName: "v-3"
+          name: "I-765.pdf"
+          url: "https://uscis2bcc76b.blob.core.windows.net/uscis/ccc7e8b0-26tKRgE1q37sa3Q232wBUjqnyCJgjozMZHwCJXZQ%3D"
+          fields: []
+        - fileId: 32
+          versionId: 94
+          versionName: "v-3"
+          name: "I-864w.pdf"
+          url: "https://uscis2bcc76b.blob.core.windows.net/uscis/f355c2c0-1ce17Z&sr=b&sp=5hPQ%3D"
+          fields: []
+        - fileId: 33
+          versionId: 91
+          versionName: "v-3"
+          name: "I-131.pdf"
+          url: "https://uscis2bcc76b.blob.core.windows.net/uscis/cd0f7630-21d4-11ee-b7Xn3kfXD0BGKSaQUU0%3D"
+          fields: []
+
+    getFileDataResponse:
+      type: object
+      example:
+        fileId: 27
+        versionId: 93
+        versionName: "v-3"
+        name: "I-360.pdf"
+        fields:
+          - name: "form1[0].#pageSet[0].Page1[0].PDF417BarCode1[0]"
+            input_type: "PDFTextField"
+            value: "I-360|07/15/22|1"
+          - name: "form1[0].#pageSet[0].Page1[1].PDF417BarCode1[0]"
+            input_type: "PDFTextField"
+            value: "I-360|07/15/22|2"
+          - name: "form1[0].#pageSet[0].Page1[2].PDF417BarCode1[0]"
+            input_type: "PDFTextField"
+            value: "I-360|07/15/22|3"
+
+    saveFileDataPayload:
+        type: object
+        example:
+          clientId: 136
+          clientUuid: "a6d020d0-19ca-11ee-b264-35feea5aa338"
+          fileId: 27
+          versionId: 93
+          contractId: 12
+          fileData:
+            - name: "form1[0].#pageSet[0].Page1[0].PDF417BarCode2[0]"
+              value: "I-485|02/21/23|1"
+            - name: "form1[0].#subform[0].Pt1Line1a_FamilyName[0]"
+              value: "Lozano"
+            - name: "form1[0].#subform[0].Pt1Line1b_GivenName[0]"
+              value: "Alexandra"
+
+    saveFileDataResponse:
+      type: object
+      example:
+        message: "File data saved successfully!"
+
+
+paths:
+  /clients/create:
+    post:
+      summary: Creates a client in the database.
+      description: Recieves in the payload a "contract_id" and a "case_number" (9 digits). It creates the client using the case_number as a credential.
+      tags: [Clients]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/createClientPayload"
+      responses:
+        "201":
+          description: New client created successfully!
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/createClientResponse"
+        "409":
+          description: Client already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  statusCode: 409
+                  error: "Conflict"
+                  message:  "Error: This client already exists!"
+        "500":
+          description: badRequest
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  statusCode: 500
+                  error: "Bad Request"
+                  message: "Error: An error has occurred while creating the user! (Maybe the contract_id is invalid)"
+
+  /clients/log-in:
+    post:
+      summary: Logs in a client if found in the database.
+      description:
+      tags: [Clients]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/loginClientPayload"
+      responses:
+        "200":
+          description: Client logged in successfully!
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/loginClientResponse"
+        "404":
+          description: Client not found!
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  statusCode: 404
+                  error: "Not Found"
+                  message:  "Client not found!"
+        "500":
+          description: Error, Details...
+          
+  /clients/delete/{clientId}:
+    delete:
+      summary: Deletes a client from the database.
+      description: Given a clientId, it deletes the client from the database.
+      tags: [Clients]
+      parameters:
+        - in: path
+          name: clientId
+          schema:
+            type: string
+          required: true
+          description: Client id.
+      responses:
+        "202":
+          description: Client deleted successfully!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Client with id: 23 was deleted successfully!"
+        "400":
+          description: Client not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  statusCode: 400
+                  error: "Bad Request"
+                  message: "Error: There are no clients with id: 2300"
+
+  /clients/{clientId}/find/file-data/all:
+    get:
+      summary: Gets and returns ALL file's data from an specific client from the database.
+      description: Given a clientID, it returns all its files data (key-values).
+      tags: [Clients]
+      parameters:
+      - in: path
+        name: clientId
+        schema:
+          type: string
+        required: true
+        description: Client id.
+      responses:
+        "200":
+          description: Success!
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/getClientsAllFilesDataResponse"
+        "409":
+          description: Error while fetching the clients data! Details...
+
+  /clients/{clientId}/find/file-data/{versionId}:
+    get:  # Cambiado de post a get, ya que en el código proporcionado es un endpoint GET
+      summary: Gets a file's data from the database.
+      description: |
+        It receives a clientId and a versionId by query.
+        Returns a JSON with info of the corresponding file and an array of fields completed with key, values ​​and dataType
+        corresponding to the corresponding version id and client id file.
+        It returns an array ONLY with the fields that have information. Those that are empty/not filled are omitted.
+      tags: [Clients]
+      parameters:
+        - name: clientId
+          in: path
+          description: The ID of the client.
+          required: true
+          schema:
+            type: string
+        - name: versionId
+          in: path
+          description: The ID of the version.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success!
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getFileDataResponse"
+        "400":
+          description: Error! Details....
+
+  /clients/fileData/save:
+    post:
+      summary: Saves the file data in the database.
+      description: |
+        Receives a clientId, clientUuid, fileId, versionId, fileData, and contractId.
+        In fileData, it receives ONLY the fields that have undergone changes and it wants to save them in the db.
+        In case of being a previously empty file, it will receive all the fields of the file, and in case of a small modification,
+        it will only receive those modified fields.
+        Returns by socket, "prefill Data", the fields with which the front will complete the pdfs based on a field with rules. 
+        Example: If you complete the "familyName" of the first pdf and it has associated rules, 
+        it will return by socket all the fields associated with this "familyName" of all the pdfs, 
+        with the value that it should take.
+        An example of what is returned per socket in prefillData would be the following:
+        [
+          {
+              fileId: 27,
+              versionId: 93,
+              fields: [
+                  {
+                      field_id: 12094,
+                      input_type: "PDFTextField",
+                      name: "form1[0].#subform[3].Pt4Line2a_GivenName[0]",
+                      value: "Alexandra"
+                  },
+                  {
+                      field_id: 13383,
+                      input_type: "PDFTextField",
+                      name: "form1[0].#subform[20].Pt1Line1_GivenName[1]",
+                      value: "Alexandra"
+                  }
+              ]
+          },
+          {
+              fileId: 29,
+              versionId: 98,
+              fields: [
+                  {
+                      field_id: 13597,
+                      input_type: "PDFTextField",
+                      name: "form1[0].#subform[1].Pt3Line5b_GivenName[0]",
+                      value: "Alexandra"
+                  },
+                  {
+                      field_id: 13629,
+                      input_type: "PDFTextField",
+                      name: "form1[0].#subform[3].Pt3Line5b_GivenName[1]",
+                      value: "Alexandra"
+                  }
+              ]
+          },
+          {
+              fileId: 32,
+              versionId: 94,
+              fields: [
+                  {
+                      field_id: 11931,
+                      input_type: "PDFTextField",
+                      name: "form1[0].#subform[4].Part2_Line1b_GivenName[1]",
+                      value: "Alexandra"
+                  },
+                  {
+                      field_id: 11153,
+                      input_type: "PDFTextField",
+                      name: "form1[0].#subform[0].Part2_Line1b_GivenName[0]",
+                      value: "Alexandra"
+                  }
+              ]
+          }
+        ]
+      tags: [Clients]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/saveFileDataPayload"
+      responses:
+        "200":
+          description: File data saved successfully!
+        "400":
+          description: Error, error description.
+
+  /clients/:clientId/conditions/validate:
+    post:
+      summary: Returns the validations with empty or filled rules
+      description: Takes the client answers and his contract to compare them with rules of empty or filled fields
+      tags: [Clients]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/getValidationsAnswers"
+      responses:
+        "200":
+          description: Validations returned
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref: "#/components/schemas/getValidationsAnswers"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+        "404":
+          description: Hypotheses not found
+
+  /clients/prefill-rules/absolute:
+    get:
+      summary: NEW. Prefill absolute
+      description: --
+      tags: [Clients]
+      responses:
+        "200":
+          description: Success!
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: ""
+        "409":
+          description: Error! Details...
+
+
+
+  /clients/{clientId}/comments:
+    get:
+      summary: Creates a client comment in the database.
+      description: Creates a client comment in the database.
+      tags: [Clients]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: ""
+      responses:
+        "201":
+          description: New client comment created successfully!
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: ""
+        "500":
+          description: badRequest
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  statusCode: 500
+                  error: "Bad Request"
+                  message: "Error: An error has occurred while creating the user! (Maybe the contract_id is invalid)"
+
+  /clients/comments/upsert:
+    post:
+      summary: Updates or inserts a comment into de database depending the case.
+      description: Updates or inserts a comment into de database depending the case.
+      tags: [Clients]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: ""
+      responses:
+        "200":
+          description: Client comment created/updated successfully!
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: ""
+        "500":
+          description: Error, Details...
+          
+  /clients/comments/delete/{commentUuid}:
+    delete:
+      summary: Deletes a clients comment from the database.
+      description: Given a commentUuid, deletes a clients comment from the database.
+      tags: [Clients]
+      parameters:
+        - in: path
+          name: commentUuid
+          schema:
+            type: string
+          required: true
+          description: Comment uuid.
+      responses:
+        "202":
+          description: Comment deleted successfully!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: ""

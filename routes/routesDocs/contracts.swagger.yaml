@@ -1,0 +1,195 @@
+components:
+  schemas:
+    getContractsResponse:
+      type: object
+      example:
+        - id: 12
+          name: "I-360 AOS USC"
+        - id: 13
+          name: "I-360 AOS LPR"
+        - id: 14
+          name: "I-360 AOS Child Base"
+        - id: 15
+          name: "I-360 AOS USC 601 and 212"
+        - id: 16
+          name: "I-360 AOS LPR 601 and 212"
+        - id: 17
+          name: "I-360 AOS Child Base 601 and 212"
+        - id: 18
+          name: "I-360 AOS USC 601"
+        - id: 19
+          name: "I-360 AOS LPR 601"
+        - id: 20
+          name: "I-360 AOS Child Base 601"
+        - id: 21
+          name: "I-360 AOS USC 212"
+        - id: 22
+          name: "I-360 AOS LPR 212"
+        - id: 23
+          name: "I-360 AOS Child Base 212"
+        - id: 24
+          name: "I-360 FWP USC"
+        - id: 25
+          name: "I-360 FWP LPR"
+        - id: 26
+          name: "I-360 FWP Child Base"
+
+    getFilesURLBasedOnContractResponse:
+      type: array
+      example:
+        - fileId: 27
+          name: "I-360.pdf"
+          version: "v-3"
+          versionId: 93
+          url: "https://uscis2bcc76b.blob.core.windows.net/uscis/914f9ad0-2670-11ee-a03b-1d160ccec8d8.pdf?sv=2023-01-03&se=2023-07-22T21%3A00%3A31Z&sr=b&sp=r&sig=mtVshNxlVUsJfvRzZXdy8VnhXF6f6ZiiGo7NXEtY%2FLE%3D"
+        - fileId: 29
+          name: "G-28.pdf"
+          version: "v-6"
+          versionId: 98
+          url: "https://uscis2bcc76b.blob.core.windows.net/uscis/e3e38400-1cde-11ee-90a0-1d1170634a03.pdf?sv=2023-01-03&se=2023-07-22T21%3A00%3A31Z&sr=b&sp=r&sig=PtipOC7qxPn6c%2FI0%2BtHW2ydiejR9gVLceInaDL10mKw%3D"
+        - fileId: 30
+          name: "I-485.pdf"
+          version: "v-3"
+          versionId: 97
+          url: "https://uscis2bcc76b.blob.core.windows.net/uscis/b60900a0-2670-11ee-a03b-1d160ccec8d8.pdf?sv=2023-01-03&se=2023-07-22T21%3A00%3A31Z&sr=b&sp=r&sig=gJFk0cSFY725a7He1CpUdz7rGADS4HW3wUhN7cHVXGk%3D"
+        - fileId: 31
+          name: "I-765.pdf"
+          version: "v-3"
+          versionId: 95
+          url: "https://uscis2bcc76b.blob.core.windows.net/uscis/ccc7e8b0-2670-11ee-a03b-1d160ccec8d8.pdf?sv=2023-01-03&se=2023-07-22T21%3A00%3A31Z&sr=b&sp=r&sig=EY3OjARrpxEkNY2dAwAZmh5HYc%2BW%2B8vbEd5L%2FI71nB0%3D"
+        - fileId: 32
+          name: "I-864w.pdf"
+          version: "v-3"
+          versionId: 94
+          url: "https://uscis2bcc76b.blob.core.windows.net/uscis/f355c2c0-1ce0-11ee-90a0-1d1170634a03.pdf?sv=2023-01-03&se=2023-07-22T21%3A00%3A31Z&sr=b&sp=r&sig=eVW4Mgb9mo7Pwr8R0e29g7Mbo1aXsqd93rAn10v3l8c%3D"
+        - fileId: 33
+          name: "I-131.pdf"
+          version: "v-3"
+          versionId: 91
+          url: "https://uscis2bcc76b.blob.core.windows.net/uscis/cd0f7630-21d4-11ee-b3cb-75b156489d29.pdf?sv=2023-01-03&se=2023-07-22T21%3A00%3A31Z&sr=b&sp=r&sig=w8eG4ALCEnbVEoh6lrjHEeCVmrfBL8hLewM5SoM5rGA%3D"
+
+
+
+
+paths:
+
+  /contracts/create:
+    post:
+      summary: NEW. Creates a new contract (Not implemented)
+      description: Creates a new contract.
+      tags: [Contracts]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+      responses:
+        "200":
+          description: Contract created successfully!
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: ''
+        "400":
+          description: Error, error description.
+        "500":
+          description: Internal server error, error description.
+  
+  /contracts/delete/{fileId}:
+    delete:
+      summary: NEW. Delete a contract (Not implemented yet).
+      description: Deletes a contract.
+      tags: [Contracts]
+      parameters:
+        - in: path
+          name: fileId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the contract to delete.
+      responses:
+        "202":
+          description: Contract deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: object
+                    description: File deleted successfully
+        "400":
+          description: Error, file to delete not found.
+        "500":
+          description: Internal server error, error description.
+
+  /contracts/find/all:
+    get:
+      summary: Get a list of contracts
+      description: Retrieves a list of contracts from the database, including their IDs and names.
+      tags: [Contracts]
+      responses:
+        "200":
+          description: List of contracts
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/getContractsResponse'
+        "500":
+          description: Internal server error, error description.
+
+  /contracts/{contractId}/find/file-url:
+    get:
+      summary: Gets the files related to the contract
+      description: |
+        Given the ID of a contract, it returns an array with the files related to that contract. 
+        These files are returned with their fileId, name, version name, versionId, and Azure storage URL.
+      tags: [Files]
+      parameters:
+        - in: path
+          name: contractId
+          schema:
+            type: string
+          required: true
+          description: Contract Id
+      responses:
+        "200":
+          description: Files associated with the contract
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/getFilesURLBasedOnContractResponse"
+        "500":
+          description: badRequest
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  statusCode: 500
+                  error: "Bad Request"
+                  message: "Error: Details..."
+
+  /contracts/:contractId/find/rules:
+    get:
+      summary: NEW. Get a list of rules associated with the contract.
+      description: Retrieves a list of rules associated with the contract.
+      tags: [Contracts]
+      responses:
+        "200":
+          description: List of contracts
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: ''
+        "500":
+          description: Internal server error, error description.
+

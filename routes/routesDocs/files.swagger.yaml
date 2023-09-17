@@ -1,0 +1,306 @@
+components:
+  schemas:
+    getFileLatestVersionResponse:
+      type: object
+      example:
+        id: 9
+        file_id: 9
+        createdAt: "2023-05-18T14:40:45.035Z"
+        name: "v-1"
+        src: "f8862920-f589-11ed-8b01-9f607c45f6fc.pdf"
+
+    generateContractLinkResponse:
+      type: object
+      example:
+        message: "https://alilstorage.blob.core.windows.net/uscisforms/dbd7c8b0-f589-11ed-8b01-9f607c45f6fc.pdf?sv=2022-11-02&se=2023-06-01T20%3A35%3A10Z&sr=b&sp=r&sig=KaauhCtGT8lNTgCbyoa%2F47NkJ0HqtiI2gIoH7V5dU60%3D"
+
+    getFilesResponse:
+      type: array
+      example:
+        - id: 26
+          name: "I-212.pdf"
+        - id: 27
+          name: "I-360.pdf"
+        - id: 28
+          name: "I-601.pdf"
+        - id: 29
+          name: "G-28.pdf"
+        - id: 30
+          name: "I-485.pdf"
+        - id: 31
+          name: "I-765.pdf"
+        - id: 32
+          name: "I-864w.pdf"
+        - id: 33
+          name: "I-131.pdf"
+
+    createFileResponse:
+      type: object
+      example:
+        message: "Success! PDF File created successfully!"
+        versionStatus: "Success! The file's FIRST version has been created!"
+        data:
+          - inputType: "PDFTextField"
+            name: "form1[0].#subform[0].Pt1Line2c_MiddleName[0]"
+            value: "Yu"
+            tooltip: "Not implemented yet"
+            datatype: "Not implemented yet"
+            x_1: "119.9990000"
+            x_2: "173.9990000"
+            y_1: "522.0000000"
+            y_2: "18.0000000"
+          - inputType: "PDFTextField"
+            name: "form1[0].#subform[0].Pt1Line2b_GivenName[0]"
+            value: "Tomas"
+            tooltip: "Not implemented yet"
+            datatype: "Not implemented yet"
+            x_1: "119.9990000"
+            x_2: "173.9990000"
+            y_1: "545.9980000"
+            y_2: "18.0000000"
+          - inputType: "PDFTextField"
+            name: "form1[0].#subform[0].Pt1Line2a_FamilyName[0]"
+            value: "Nakasone"
+            tooltip: "Not implemented yet"
+            datatype: "Not implemented yet"
+            x_1: "119.9990000"
+            x_2: "173.9990000"
+            y_1: "569.9990000"
+            y_2: "18.0000000"
+          - inputType: "PDFTextField"
+            name: "form1[0].#subform[0].#area[0].Pt1Line1_USCISOnlineAcctNumber[0]"
+            value: "153284232849"
+            tooltip: "Not implemented yet"
+            datatype: "Not implemented yet"
+            x_1: "120.9320000"
+            x_2: "174.0100000"
+            y_1: "624.8670000"
+            y_2: "18.0000000"
+          - inputType: "PDFCheckBox"
+            name: "CheckBox1"
+            value: true
+            tooltip: "Not implemented yet"
+            datatype: "Not implemented yet"
+            x_1: "55.7878000"
+            x_2: "18.0000000"
+            y_1: "442.9320000"
+            y_2: "18.0000000"
+          - inputType: "PDFCheckBox"
+            name: "Check Box2"
+            value: false
+            tooltip: "Not implemented yet"
+            datatype: "Not implemented yet"
+            x_1: "97.8572000"
+            x_2: "17.9998000"
+            y_1: "442.0170000"
+            y_2: "18.0000000"
+          - inputType: "PDFCheckBox"
+            name: "Check Box3"
+            value: false
+            tooltip: "Not implemented yet"
+            datatype: "Not implemented yet"
+            x_1: "140.8410000"
+            x_2: "18.0000000"
+            y_1: "444.7610000"
+            y_2: "18.0000000"
+          - inputType: "PDFDropdown"
+            name: "StateDropdown"
+            tooltip: "Not implemented yet"
+            datatype: "Not implemented yet"
+            value: "Misiones"
+            x_1: "83.7815000"
+            x_2: "35.3455000"
+            y_1: "395.5070000"
+            y_2: "18.4290000"
+          - inputType: "PDFDropdown"
+            name: "Dropdown7"
+            tooltip: "Not implemented yet"
+            datatype: "Not implemented yet"
+            value: "opcion A"
+            x_1: "118.9150000"
+            x_2: "176.1360000"
+            y_1: "372.3670000"
+            y_2: "17.0120000"
+          - inputType: "PDFTextField"
+            name: "CountryTxt"
+            tooltip: "Not implemented yet"
+            datatype: "Not implemented yet"
+            x_1: "69.3989000"
+            x_2: "150.0001000"
+            y_1: "309.3650000"
+            y_2: "22.0000000"
+
+
+paths:
+
+  /files/find/latest-version/find/{fileId}:
+    get:
+      summary: Get file's latest version
+      description: Given a file ID, it returns the latest version of the file specified.
+      tags: [Files]
+      parameters:
+      - in: path
+        name: fileId
+        schema:
+          type: string
+        required: true
+        description: The file's ID.
+      responses:
+        '200':
+          description: Success!
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/getFileLatestVersionResponse'
+        '400':
+          description: Error, error description.
+
+  /files/generate-link/{blobName}:
+    get:
+      summary: Generates a link to access the PDF file in the Azure Storage.
+      description: Given a blob, it returns a link to access the PDF file in the Azure Storage.
+      tags: [Files]
+      parameters:
+      - in: path
+        name: blobName
+        schema:
+          type: string
+        required: true
+        description: The blobName is the "src" attribute in the Version Table. Example; dbd7c8b0-f589-11ed-8b01-9f607c45f6fc.pdf
+      responses:
+        '200':
+          description: Success!
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/generateContractLinkResponse'
+        '400':
+          description: Error, error description.
+
+  /files/find/all :
+    get:
+      summary: Gets an array of all files loaded into the database
+      description: Returns an array of all the files loaded into the database, with their id and corresponding name.
+      tags: [Files]
+      responses:
+        "200":
+          description: Arrangement of files with their id and name
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/getFilesResponse'
+        "400":
+          description: Error, error description.
+
+  /files/create:
+    post:
+      summary: Creates a new PDF file in the database
+      description: Creates a new PDF file in the database and save it to Azure storage. If a file with the same name already exists, a new version of the file is created.
+      tags: [Files]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: PDF file created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/createFileResponse'
+        "400":
+          description: Error, error description.
+        "500":
+          description: Internal server error, error description.
+
+  /files/delete/{fileId}:
+    delete:
+      summary: Delete a file from the database
+      description: Deletes a file from the database using the provided fileId.
+      tags: [Files]
+      parameters:
+        - in: path
+          name: fileId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the file to delete.
+      responses:
+        "202":
+          description: File deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: object
+                    description: File deleted successfully
+        "400":
+          description: Error, file to delete not found.
+        "500":
+          description: Internal server error, error description.
+
+  /files/version/update/{versionId}:
+    put:
+      summary: Update the corresponding file for the given versionId
+      description: Updates the corresponding file for the specified versionId. The "src" of the Version table is replaced by the new file's "src".
+      tags: [Files]
+      parameters:
+        - in: path
+          name: versionId
+          schema:
+            type: string
+          required: true
+          description: The versionId of the file to update.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                pdf:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: File updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+        "400":
+          description: Error, versionId not found or invalid request.
+        "500":
+          description: Internal server error, error description.
+
+  /files/{fileId}/fields:
+    get:
+      summary: NEW. Gets an array of all the field respective to a given file
+      description: Returns an array of all the field respective to a given file
+      tags: [Files]
+      responses:
+        "200":
+          description: Arrangement of fields of the file.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: ''
+        "400":
+          description: Error, error description.
